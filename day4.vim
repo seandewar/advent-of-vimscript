@@ -22,7 +22,6 @@ func! s:Parse() abort
     endfor
     return ret
 endfunc
-const s:in = s:Parse()
 
 func! s:Bingo(board, x, y) abort
     let a:board[a:y][a:x] = -1
@@ -47,31 +46,21 @@ func! s:Sum(board) abort
     return s
 endfunc
 
-func! s:P1() abort
-    let boards = deepcopy(s:in.boards)
-    for num in s:in.nums
-        for [i, x, y] in s:in.lookup->get(num, [])
-            if boards[i]->s:Bingo(x, y)
-                return num * s:Sum(boards[i])
-            endif
-        endfor
-    endfor
-endfunc
-
-func! s:P2() abort
-    let boards = deepcopy(s:in.boards)
+func! s:P1P2() abort
+    let in = s:Parse()
     let bingoed = {}
-    for num in s:in.nums
-        for [i, x, y] in s:in.lookup->get(num, [])
-            if !exists('bingoed[i]') && boards[i]->s:Bingo(x, y)
+    let p1 = 0
+    for num in in.nums
+        for [i, x, y] in in.lookup->get(num, [])
+            if !exists('bingoed[i]') && in.boards[i]->s:Bingo(x, y)
+                let p1 = empty(bingoed) ? num * s:Sum(in.boards[i]) : p1
                 let bingoed[i] = 1
-                if len(bingoed) == len(boards)
-                    return num * s:Sum(boards[i])
+                if len(bingoed) == len(in.boards)
+                    return [p1, num * s:Sum(in.boards[i])]
                 endif
             endif
         endfor
     endfor
 endfunc
 
-echomsg 'D4 P1:' s:P1() 'P2:' s:P2()
-unlet s:in
+echomsg 'D4:' s:P1P2()
