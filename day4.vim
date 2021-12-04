@@ -25,6 +25,7 @@ endfunc
 const s:in = s:Parse()
 
 func! s:Bingo(board, x, y) abort
+    let a:board[a:y][a:x] = -1
     let h_bingo = 1
     let v_bingo = 1
     let i = 0
@@ -39,7 +40,7 @@ endfunc
 func! s:Sum(board) abort
     let s = 0
     for r in a:board
-        for num in r->filter({_, v -> v != -1 })
+        for num in r->filter({_, v -> v != -1})
             let s += num
         endfor
     endfor
@@ -50,14 +51,27 @@ func! s:P1() abort
     let boards = deepcopy(s:in.boards)
     for num in s:in.nums
         for [i, x, y] in s:in.lookup->get(num, [])
-            let b = boards[i]
-            let b[y][x] = -1
-            if b->s:Bingo(x, y)
-                return num * s:Sum(b)
+            if boards[i]->s:Bingo(x, y)
+                return num * s:Sum(boards[i])
             endif
         endfor
     endfor
 endfunc
 
-echomsg 'D4 P1:' s:P1()
+func! s:P2() abort
+    let boards = deepcopy(s:in.boards)
+    let bingoed = {}
+    for num in s:in.nums
+        for [i, x, y] in s:in.lookup->get(num, [])
+            if !exists('bingoed[i]') && boards[i]->s:Bingo(x, y)
+                let bingoed[i] = 1
+                if len(bingoed) == len(boards)
+                    return num * s:Sum(boards[i])
+                endif
+            endif
+        endfor
+    endfor
+endfunc
+
+echomsg 'D4 P1:' s:P1() 'P2:' s:P2()
 unlet s:in
