@@ -9,3 +9,7 @@ _meme credit: [@ii14](https://github.com/ii14)_
 ## Why?
 
 idk lol
+
+## What about Vim9 script?
+
+no
