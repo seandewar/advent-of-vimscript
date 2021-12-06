@@ -1,11 +1,11 @@
 func! s:P1P2() abort
-    const in = readfile('day2.in')
+    const input = readfile('day2.in')
                 \ ->map({_, v -> split(v)})
-                \ ->map({_, v -> [v[0][0], str2nr(v[1])]})
+                \ ->map({_, v -> [v[0][0], v[1]]})
     let d = [0, 0]
     let x = 0
     let a = 0
-    for ins in in
+    for ins in input
         if ins[0] ==# 'f'
             let x += ins[1]
             let d[1] += a * ins[1]
