@@ -18,14 +18,14 @@ func! s:Rating(in, cond) abort
 endfunc
 
 func! s:P1P2() abort
-    const in = readfile('day3.in')
+    const inp = readfile('day3.in')
     const bits = [0]
                 \ ->repeat(12)
-                \ ->map({i, _ -> in->s:NetCount(i) > 0 ? '1' : '0'})
+                \ ->map({i, _ -> inp->s:NetCount(i) > 0 ? '1' : '0'})
                 \ ->join('')
     const g = str2nr(bits, 2)
     const e = g->invert()->and(0b111111111111)
-    return [g * e, in->s:Rating({v -> v >= 0}) * in->s:Rating({v -> v < 0})]
+    return [g * e, inp->s:Rating({v -> v >= 0}) * inp->s:Rating({v -> v < 0})]
 endfunc
 
 echomsg 'D3:' s:P1P2()

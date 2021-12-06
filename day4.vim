@@ -1,7 +1,7 @@
 func! s:Parse() abort
     const in = readfile('day4.in')
     let ret = #{
-                \ nums: in[0]->split(',')->map({_, v -> str2nr(v)}),
+                \ nums: in[0]->split(','),
                 \ boards: [],
                 \ lookup: {},
                 \ }
@@ -9,7 +9,7 @@ func! s:Parse() abort
         if empty(line)
             eval ret.boards->add([])
         else
-            let r = line->split()->map({_, v -> str2nr(v)})
+            let r = line->split()
             let x = 0
             while x < 5
                 let ret.lookup[r[x]] = ret.lookup
