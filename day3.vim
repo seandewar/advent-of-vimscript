@@ -18,7 +18,7 @@ func! s:Rating(in, cond) abort
 endfunc
 
 func! s:P1P2() abort
-    const inp = readfile('day3.in')
+    const inp = readfile('inputs/day3.in')
     const bits = [0]
                 \ ->repeat(12)
                 \ ->map({i, _ -> inp->s:NetCount(i) > 0 ? '1' : '0'})

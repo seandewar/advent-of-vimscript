@@ -1,5 +1,5 @@
 func! s:P1P2() abort
-    const input = readfile('day1.in')->map({_, v -> str2nr(v)})
+    const input = readfile('inputs/day1.in')->map({_, v -> str2nr(v)})
     let ret = [0, 0]
     let i = 1
     while i < len(input)

@@ -4,7 +4,7 @@ func! s:Plot(lookup, k) abort
 endfunc
 
 func! s:P1P2() abort
-    const input = readfile('day5.in')
+    const input = readfile('inputs/day5.in')
                 \ ->map({_, v -> v->split(' -> ')
                 \                 ->map({_, v -> v->split(',')
                 \                                 ->map({_, v -> str2nr(v)})})})
