@@ -1,5 +1,5 @@
 func! s:P1P2() abort
-    const input = readfile('day2.in')
+    const input = readfile('inputs/day2.in')
                 \ ->map({_, v -> split(v)})
                 \ ->map({_, v -> [v[0][0], v[1]]})
     let d = [0, 0]

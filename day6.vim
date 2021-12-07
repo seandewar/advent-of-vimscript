@@ -1,7 +1,7 @@
 func! s:P1P2() abort
     let timers = [0]->repeat(9)
     let counts = [0, 0]
-    for v in readfile('day6.in')[0]->split(',')
+    for v in readfile('inputs/day6.in')[0]->split(',')
         let timers[v] += 1
         let counts[0] += 1
     endfor

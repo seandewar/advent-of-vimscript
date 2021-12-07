@@ -1,5 +1,5 @@
 func! s:Parse() abort
-    const in = readfile('day4.in')
+    const in = readfile('inputs/day4.in')
     let ret = #{
                 \ nums: in[0]->split(','),
                 \ boards: [],
