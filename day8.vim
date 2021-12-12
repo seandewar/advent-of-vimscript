@@ -16,58 +16,44 @@ func! s:Len(k) abort
     return len
 endfunc
 
-func! s:Unmatched(k_into, k) abort
-    return a:k->xor(a:k_into)->and(a:k)
-endfunc
-
 func! s:P1P2() abort
     const input = readfile('inputs/day8.in')
                 \ ->map({_, v -> v->split(' | ')
                 \                 ->map({_, v -> v->split()
                 \                                 ->map({_, v -> s:Key(v)})})})
-    const len2num = #{2: 1, 3: 7, 4: 4, 7: 8}
+    const len1478 = #{2: 1, 3: 7, 4: 4, 7: 8}
+    const len5tab = [[[1, 2], 2], [[2, 3], 3], [[1, 3], 5]]
+    const len6tab = [[[2, 3], 0], [[1, 3], 6], [[2, 4], 9]]
     let ret = [0, 0]
     for [in_nums, out_nums] in input
-        let num2k = {}
         let k2num = {}
-        func! s:Store(k, num) closure abort
-            let num2k[a:num] = a:k
-            let k2num[a:k] = a:num
-        endfunc
+        let k14 = [0, 0]
         for k in in_nums
             let len = s:Len(k)
-            if exists('len2num[' .. len .. ']')
-                call s:Store(k, len2num[len])
+            if exists('len1478[' .. len .. ']')
+                let num = len1478[len]
+                let k2num[k] = num
+                if num == 1 || num == 4 | let k14[num == 4] = k | endif
             endif
         endfor
-        while len(num2k) < 10
-            for k in in_nums
-                if exists('k2num[' .. k .. ']') | continue | endif
-                if s:Len(k) == 5
-                    if s:Unmatched(k, num2k[1]) == 0
-                        call s:Store(k, 3)
-                    elseif exists('num2k[9]')
-                        call s:Store(k, s:Unmatched(k, num2k[9])->s:Len() == 1
-                                    \ ? 5 : 2)
-                    endif
-                else
-                    if s:Unmatched(k, num2k[4]) == 0
-                        call s:Store(k, 9)
-                    elseif exists('num2k[9]')
-                        call s:Store(k, s:Unmatched(k, num2k[1]) == 0 ? 0 : 6)
-                    endif
+        for k in in_nums
+            if exists('k2num[' .. k .. ']') | continue | endif
+            let m14 = copy(k14)->map({_, v -> v->and(k)->s:Len()})
+            for [num_m14, num] in s:Len(k) == 5 ? len5tab : len6tab
+                if m14 == num_m14
+                    let k2num[k] = num
+                    break
                 endif
             endfor
-        endwhile
-        let num = 0
-        for k in out_nums
-            let num = num * 10 + k2num[k]
-            let ret[0] += exists('len2num[' .. s:Len(k) .. ']')
         endfor
-        let ret[1] += num
+        let out_num = 0
+        for k in out_nums
+            let out_num = out_num * 10 + k2num[k]
+            let ret[0] += exists('len1478[' .. s:Len(k) .. ']')
+        endfor
+        let ret[1] += out_num
     endfor
     return ret
 endfunc
 
 echomsg 'D8:' s:P1P2()
-unlet s:masks
