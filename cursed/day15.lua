@@ -6,9 +6,6 @@ Queue.__index = Queue
 function Queue.new()
   return setmetatable({ l = 1, r = 1 }, Queue)
 end
-function Queue:len()
-  return self.r - self.l
-end
 function Queue:push(v)
   self[self.r] = v
   self.r = self.r + 1
@@ -16,6 +13,9 @@ end
 function Queue:pop()
   self.l = self.l + 1
   return self[self.l - 1]
+end
+function Queue:__len()
+  return self.r - self.l
 end
 
 local function p1p2()
@@ -53,7 +53,7 @@ local function p1p2()
     end
   end
 
-  while relaxed:len() ~= 0 do
+  while #relaxed ~= 0 do
     local x, y = unpack(relaxed:pop())
     local cost = min_costs[idx(x, y)]
     relax(x - 1, y, cost)
