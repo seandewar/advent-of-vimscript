@@ -9,8 +9,8 @@ endfunc
 const s:type2op = #{
             \ 0: {v -> s:Fold(v, {a, x -> a + x}, 0)},
             \ 1: {v -> s:Fold(v, {a, x -> a * x}, 1)},
-            \ 2: {v -> s:Fold(v, {a, x -> min([a, x])}, v:numbermax)},
-            \ 3: {v -> s:Fold(v, {a, x -> max([a, x])}, v:numbermin)},
+            \ 2: function('min'),
+            \ 3: function('max'),
             \ 5: {v -> v[0] > v[1]},
             \ 6: {v -> v[0] < v[1]},
             \ 7: {v -> v[0] == v[1]},
