@@ -4,10 +4,7 @@ func! s:Split(x) abort
         if str2nr(a:x[i]) > 9
             let num = str2nr(a:x[i])
             let a:x[i] = '['
-            eval a:x->insert(num / 2, i + 1)
-                        \ ->insert(',', i + 2)
-                        \ ->insert(num / 2 + num % 2, i + 3)
-                        \ ->insert(']', i + 4)
+            eval a:x->extend([num / 2, ',', num / 2 + num % 2, ']'], i + 1)
             return 1
         endif
         let i += 1
@@ -31,15 +28,14 @@ func! s:Explode(x) abort
     let d = -1
     let i = 0
     while i < len(a:x)
-        let d += a:x[i] == '['
-        let d -= a:x[i] == ']'
+        let d += a:x[i] == '[' | let d -= a:x[i] == ']'
         if d == 4
             let pair = a:x[i : i + 4]->join('')->eval()
-            eval a:x->s:Splash(i - 1, -1, pair[0])
-            eval a:x->s:Splash(i + 5, 1, pair[1])
             eval a:x->remove(i + 1, i + 4)
-            let a:x[i] = 0
             let d -= 1
+            let a:x[i] = 0
+            eval a:x->s:Splash(i - 1, -1, pair[0])
+            eval a:x->s:Splash(i + 2, 1, pair[1])
         endif
         let i += 1
     endwhile
@@ -54,24 +50,27 @@ func! s:Magnitude(x) abort
                 \ ->eval()
 endfunc
 
+func! s:Sum(x, y) abort
+    let num = ['[']->extend(a:x)->add(',')->extend(a:y)->add(']')
+    while s:Explode(num) || s:Split(num) | endwhile
+    return num
+endfunc
+
 func! s:P1P2() abort
     const input = readfile('inputs/day18.in')
                 \ ->map({_, v -> str2list(v)->map({_, v -> nr2char(v)})})
     let num = input[0]
     for x in input[1:]
-        let num = ['[']->extend(num)->add(',')->extend(x)->add(']')
-        while s:Explode(num) || s:Split(num) | endwhile
+        let num = s:Sum(num, x)
     endfor
     let ret = [s:Magnitude(num), 0]
     for x in input
         for y in input
             if x is y | continue | endif
-            let num = ['[']->extend(x)->add(',')->extend(y)->add(']')
-            while s:Explode(num) || s:Split(num) | endwhile
-            let ret[1] = max([ret[1], s:Magnitude(num)])
+            let ret[1] = max([ret[1], s:Sum(x, y)->s:Magnitude()])
         endfor
     endfor
     return ret
 endfunc
 
-echomsg 'D18:' s:P1P2()
+echomsg 'D18:' s:P1P2() | " NOTE: P2 is *super* slow; get yourself a drink!
